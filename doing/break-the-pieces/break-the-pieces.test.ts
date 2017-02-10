@@ -1,5 +1,6 @@
 import {
   findEdges,
+  getNextDirection,
   textToLines,
   topLeftOnly
 } from './break-the-pieces'
@@ -84,5 +85,39 @@ describe('topRightOnly', function () {
     const expected = [[0, 0]]
 
     topLeftOnly(edges, lines).should.deep.equal(expected)
+  })
+})
+
+describe('getNextDirection', function () {
+  it(`should return 'E' as the next direction if first edge`, function () {
+    const lines =
+      ["+-----+",
+      "|     |",
+      "|     |",
+      "+-----+"]
+    const previous: [number, number] = [0, 0]
+    const previousDirection = null
+    ;(getNextDirection(lines, previous, previousDirection) as any).should.equal('E')
+  })
+  it(`should return 'S' if the previous direction was 'E', and it can go there`, function () {
+    const lines =
+      ["+-----+",
+      "|     |",
+      "|     |",
+      "+-----+"]
+    const previous: [number, number] = [0, 6]
+    const previousDirection = 'E'
+    ;(getNextDirection(lines, previous, previousDirection) as any).should.equal('S')
+  })
+  it(`should return 'N' if the previous direction was 'N', and it cannot go 'E' and can go there`, function () {
+    const lines =
+      ["+-----+",
+      "|     |",
+      "+     |",
+      "|     |",
+      "+-----+"]
+    const previous: [number, number] = [2, 0]
+    const previousDirection = 'N'
+    ;(getNextDirection(lines, previous, previousDirection) as any).should.equal('N')
   })
 })
