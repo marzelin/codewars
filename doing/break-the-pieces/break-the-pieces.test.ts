@@ -1,5 +1,6 @@
 import {
   findEdges,
+  getAllEdges,
   getNextDirection,
   getNextEdge,
   isOuter,
@@ -192,5 +193,42 @@ describe('getNextEdge', function () {
     const origin: numberTuple = [0, 6]
     const direction = 'S'
     getNextEdge(lines, origin, direction).should.deep.equal([4, 6])
+  })
+})
+
+describe('getAllEdges', function () {
+  it('should get all edges of a piece', function () {
+    const lines =
+      ["+-----+",
+      "|     |",
+      "+     |",
+      "|     |",
+      "+-----+"]
+    const origin: numberTuple = [0, 0]
+    const allEdges = [[0, 0], [0, 6], [4, 6], [4, 0], [2, 0], [0, 0]]
+    const usedOriginEdges: never[] = []
+    getAllEdges(lines)(origin).should.deep.equal([allEdges, usedOriginEdges])
+  })
+  it('should return null if it\'s outer shape', function () {
+    const lines =
+     ["+-----+",
+      "|     |",
+      "+  +--+",
+      "|  |   ",
+      "+--+   "]
+    const origin: numberTuple = [2, 3]
+    getAllEdges(lines)(origin).should.deep.equal([null, []])
+  })
+  it('should return used edge', function () {
+    const lines =
+     ["+--+--+",
+      "|  |  |",
+      "+--+  |",
+      "|     |",
+      "+--+--+"]
+    const origin: numberTuple = [0, 3]
+    const allEdges = [[0, 3], [0, 6], [4, 6], [4, 3], [4, 0], [2, 0], [2, 3], [0, 3]]
+    const usedOriginEdges = [[2, 0]]
+    getAllEdges(lines)(origin).should.deep.equal([allEdges, usedOriginEdges])
   })
 })

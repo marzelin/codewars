@@ -29,35 +29,37 @@ const textToLines = (s: string) => s.split(`\n`)
 //   .filter(noOuterShapes)
 // }
 
-// const allEdges =
-//   (lines: string[]) =>
-//   (origin: numberTuple) => {
-//     let previous = origin
-//     let previousDirection: direction | null = null
-//     let next: numberTuple
-//     let shapeEdges = [origin]
-//     let usedOriginEdges = []
-//     do {
-//       let nextDirection = getNextDirection(lines, previous, previousDirection)
-//       if (previousDirection === 'E' && nextDirection === 'N' && isOuter(lines, previous)) {
-//         return 'outer shape'
-//       }
-//       if (previousDirection === 'N' && nextDirection === 'E') {
-//         usedOriginEdges.push(previous)
-//       }
-//       next = getNextEdge(lines, previous, nextDirection)
-//       previous = next
-//       shapeEdges.push(next)
+const getAllEdges =
+  (lines: string[]) =>
+  (origin: numberTuple) => {
+    let previous = origin
+    let previousDirection: direction | null = null
+    let next: numberTuple
+    let shapeEdges = [origin]
+    let usedOriginEdges = []
+    let nextDirection: direction
+    do {
+      nextDirection = getNextDirection(lines, previous, previousDirection)
+      if (previousDirection === 'E' && nextDirection === 'N' && isOuter(lines, previous)) {
+        return [null, []]
+      }
+      if (previousDirection === 'N' && nextDirection === 'E') {
+        usedOriginEdges.push(previous)
+      }
+      next = getNextEdge(lines, previous, nextDirection)
+      previous = next
+      previousDirection = nextDirection
+      shapeEdges.push(next)
 
-//     } while (origin[0] !== next[0] || origin[1] !== next[1]) 
-//     return [shapeEdges, usedOriginEdges]
-//   }
+    } while (origin[0] !== next[0] || origin[1] !== next[1]) 
+    return [shapeEdges, usedOriginEdges]
+  }
 
 const getNextDirection = (
   lines: string[],
   [x, y]: numberTuple,
   previousDirection: null | direction
-) => {
+): direction => {
   switch (previousDirection) {
     case null: return 'E'
     case 'N':
@@ -84,7 +86,7 @@ const getNextEdge = (
   lines: string[],
   [x, y]: numberTuple,
   direction: direction
-) => {
+): numberTuple => {
   let verticalStep = 0
   let horizontalStep = 0
   switch (direction) {
@@ -105,6 +107,7 @@ const getNextEdge = (
 }
 
 export {
+  getAllEdges,
   findEdges,
   getNextDirection,
   getNextEdge,
