@@ -1,7 +1,9 @@
 import {
   findEdges,
   getNextDirection,
+  getNextEdge,
   isOuter,
+  numberTuple,
   textToLines,
   topLeftOnly
 } from './break-the-pieces'
@@ -96,7 +98,7 @@ describe('getNextDirection', function () {
       "|     |",
       "|     |",
       "+-----+"]
-    const previous: [number, number] = [0, 0]
+    const previous: numberTuple = [0, 0]
     const previousDirection = null
     ;(getNextDirection(lines, previous, previousDirection) as any).should.equal('E')
   })
@@ -106,7 +108,7 @@ describe('getNextDirection', function () {
       "|     |",
       "|     |",
       "+-----+"]
-    const previous: [number, number] = [0, 6]
+    const previous: numberTuple = [0, 6]
     const previousDirection = 'E'
     ;(getNextDirection(lines, previous, previousDirection) as any).should.equal('S')
   })
@@ -117,7 +119,7 @@ describe('getNextDirection', function () {
       "+     |",
       "|     |",
       "+-----+"]
-    const previous: [number, number] = [2, 0]
+    const previous: numberTuple = [2, 0]
     const previousDirection = 'N'
     ;(getNextDirection(lines, previous, previousDirection) as any).should.equal('N')
   })
@@ -131,7 +133,7 @@ describe('isOuter', function () {
       "+     |",
       "|     |",
       "+-----+"]
-    const point: [number, number] = [0, 6]
+    const point: numberTuple = [0, 6]
     isOuter(lines, point).should.be.true
   })
   it('should return false if a point is not at the end of a line', function () {
@@ -141,7 +143,54 @@ describe('isOuter', function () {
       "+     |",
       "|     |",
       "+-----+"]
-    const point: [number, number] = [2, 0]
+    const point: numberTuple = [2, 0]
     isOuter(lines, point).should.be.false
+  })
+})
+
+describe('getNextEdge', function () {
+  it('should get next edge on the right' , function () {
+    const lines =
+      ["+-----+",
+      "|     |",
+      "+     |",
+      "|     |",
+      "+-----+"]
+    const origin: numberTuple = [0, 0]
+    const direction = 'E'
+    getNextEdge(lines, origin, direction).should.deep.equal([0, 6])
+  })
+  it('should get next edge on the left' , function () {
+    const lines =
+      ["+-----+",
+      "|     |",
+      "+     |",
+      "|     |",
+      "+-----+"]
+    const origin: numberTuple = [4, 6]
+    const direction = 'W'
+    getNextEdge(lines, origin, direction).should.deep.equal([4, 0])
+  })
+  it('should get next edge above' , function () {
+    const lines =
+      ["+-----+",
+      "|     |",
+      "+     |",
+      "|     |",
+      "+-----+"]
+    const origin: numberTuple = [4, 0]
+    const direction = 'N'
+    getNextEdge(lines, origin, direction).should.deep.equal([2, 0])
+  })
+  it('should get next edge below' , function () {
+    const lines =
+      ["+-----+",
+      "|     |",
+      "+     |",
+      "|     |",
+      "+-----+"]
+    const origin: numberTuple = [0, 6]
+    const direction = 'S'
+    getNextEdge(lines, origin, direction).should.deep.equal([4, 6])
   })
 })
