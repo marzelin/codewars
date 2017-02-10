@@ -17,10 +17,9 @@ const findEdges = (lines: string[]) => {
 
 const topLeftOnly = (edges: number[][], lines: string[]) =>
   edges.filter( ([x, y]) =>
-  
-                            lines[x][y + 1] === '-'
-                            && lines[x + 1]
-                            && lines[x + 1][y] === '|')
+    lines[x][y + 1] === '-'
+    && lines[x + 1]
+    && lines[x + 1][y] === '|')
 
 const textToLines = (s: string) => s.split(`\n`)
 
@@ -108,9 +107,9 @@ const getNextEdge = (
 
 const normalizeEdges = (edges: numberTuple[]) => {
   const [minX, minY] = edges.reduce(
-    ([minX, minY]: numberTuple, [x, y]: numberTuple) =>
+    ([minX, minY], [x, y]) =>
       [Math.min(minX, x), Math.min(minY, y)])
-    return edges.map( ([x, y]: numberTuple) => [x - minX, y - minY])
+    return edges.map( ([x, y]) => [x - minX, y - minY])
 }
 
 export {
