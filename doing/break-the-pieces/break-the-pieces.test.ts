@@ -1,6 +1,7 @@
 import {
   findEdges,
   getNextDirection,
+  isOuter,
   textToLines,
   topLeftOnly
 } from './break-the-pieces'
@@ -119,5 +120,28 @@ describe('getNextDirection', function () {
     const previous: [number, number] = [2, 0]
     const previousDirection = 'N'
     ;(getNextDirection(lines, previous, previousDirection) as any).should.equal('N')
+  })
+})
+
+describe('isOuter', function () {
+  it('should return true if a point is at the end of a line', function () {
+    const lines =
+      ["+-----+",
+      "|     |",
+      "+     |",
+      "|     |",
+      "+-----+"]
+    const point: [number, number] = [0, 6]
+    isOuter(lines, point).should.be.true
+  })
+  it('should return false if a point is not at the end of a line', function () {
+    const lines =
+      ["+-----+",
+      "|     |",
+      "+     |",
+      "|     |",
+      "+-----+"]
+    const point: [number, number] = [2, 0]
+    isOuter(lines, point).should.be.false
   })
 })

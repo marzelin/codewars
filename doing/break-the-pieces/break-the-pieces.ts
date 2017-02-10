@@ -35,8 +35,11 @@ const textToLines = (s: string) => s.split(`\n`)
 //     let shape = [origin]
 //     do {
 //       let nextDirection = getNextDirection(lines, previous, previousDirection)
-//       if (previousDirection === 'N' && nextDirection === 'E' && isOuter(lines, previous)) {
+//       if (previousDirection === 'E' && nextDirection === 'N' && isOuter(lines, previous)) {
 //         return 'outer shape'
+//       }
+//       if (previousDirection === 'N' && nextDirection === 'E') {
+//         // TODO remove that node from topLeftEdges
 //       }
 //       next = getNextEdge(lines, previous, nextDirection)
 //       previous = next
@@ -66,9 +69,15 @@ const getNextDirection = (
   }
 }
 
+const isOuter = (
+  lines: string[],
+  [x, y]: [number, number]
+) => !lines[x][y + 1]
+
 export {
   findEdges,
   getNextDirection,
+  isOuter,
   textToLines,
   topLeftOnly
 }
