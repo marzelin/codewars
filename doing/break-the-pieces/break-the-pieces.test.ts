@@ -1,4 +1,6 @@
 import {
+  drawEdge,
+  drawPiece,
   findEdges,
   getAllEdges,
   getNextDirection,
@@ -6,6 +8,7 @@ import {
   isOuter,
   normalizeEdges,
   numberTuple,
+  substitute,
   textToLines,
   topLeftOnly
 } from './break-the-pieces'
@@ -239,5 +242,33 @@ describe('normalizeEdges', function () {
     const edges: numberTuple[] = [[1, 3], [1, 6], [4, 6], [4, 3], [1, 3]]
     const expected = [[0, 0], [0, 3], [3, 3], [3, 0], [0, 0]]
     normalizeEdges(edges).should.deep.equal(expected)
+  })
+})
+
+describe('drawEdge', function () {
+  it('should draw a line between two points', function () {
+    const start: numberTuple = [0, 0]
+    const end: numberTuple = [0, 3]
+    const piece = ['   ']
+    const expected = [' --+'] 
+    drawEdge(start, end, piece).should.deep.equal(expected)
+  })
+})
+
+describe('drawPiece', function () {
+  it('should draw piece from given edges', function () {
+    const edges: numberTuple[] = [[0, 0], [0, 3], [3, 3], [3, 0], [0, 0]]
+    const expected = 
+     ["+--+",
+      "|  |",
+      "|  |",
+      "+--+"].join('\n')
+    drawPiece(edges).should.equal(expected)
+  })
+})
+
+describe('substitute', function () {
+  it('should substitute character in a string at a given position', function () {
+    substitute('star', 'e', 2).should.equal('ster')
   })
 })

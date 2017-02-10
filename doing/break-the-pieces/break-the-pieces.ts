@@ -112,7 +112,44 @@ const normalizeEdges = (edges: numberTuple[]) => {
     return edges.map( ([x, y]) => [x - minX, y - minY])
 }
 
+const drawPiece = (edges: numberTuple[]) => {
+  let [maxX, maxY] = edges
+    .reduce( ([maxX, maxY], [x, y]) => [Math.max(maxX, x), Math.max(maxY, y)])
+  let piece = []
+  for (let i = 0; i <= maxX; i++) { piece.push( ' '.repeat(maxY) ) }
+  for (let i = 0, l = edges.length - 1; i < l; i++) {
+    let start = edges[i]
+    let end = edges[i + 1]
+    piece = drawEdge(start, end, piece)
+  }
+  return piece
+    .join('\n')
+}
+
+const drawEdge = (
+  [x1, y1]: numberTuple,
+  [x2, y2]: numberTuple,
+  piece: string[]
+) => {
+  piece = [...piece]
+  piece[x2]= substitute(piece[x2], '+', y2)
+  if (x1 !== x2) {
+    for (let i = Math.min(x1, x2) + 1, l = Math.max(x1, x2); i < l; i++) {
+      piece[i] = substitute(piece[i], '|', y1)
+    }
+  } else {
+    for (let i = Math.min(y1, y2) + 1, l = Math.max(y1, y2); i < l; i++) {
+      piece[x1] = substitute(piece[x1], '-', i)
+    }
+  }
+  return piece
+}
+
+const substitute = (s: string, ch: string, i: number) => s.slice(0, i) + ch + s.slice(i + 1)
+
 export {
+  drawEdge,
+  drawPiece,
   getAllEdges,
   findEdges,
   getNextDirection,
@@ -120,6 +157,7 @@ export {
   isOuter,
   normalizeEdges,
   numberTuple,
+  substitute,
   textToLines,
   topLeftOnly
 }
