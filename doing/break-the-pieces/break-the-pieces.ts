@@ -54,16 +54,10 @@ const getNextDirection = (
     case null: return 'E'
     case 'N':
       if (lines[x][y + 1] === '-') { return 'E'}
-      if (lines[x - 1] && lines[x - 1][y] === '|') { return 'N'}
-      if (lines[x][y - 1] === '-') { return 'W'}
     case 'W':
       if (lines[x - 1] && lines[x - 1][y] === '|') { return 'N'}
-      if (lines[x][y - 1] === '-') { return 'W'}
-      if (lines[x + 1] && lines[x + 1][y] === '|') { return 'S'}
     case 'S':
       if (lines[x][y - 1] === '-') { return 'W'}
-      if (lines[x + 1] && lines[x + 1][y] === '|') { return 'S'}
-      if (lines[x][y + 1] === '-') { return 'E'}
     case 'E':
       if (lines[x + 1] && lines[x + 1][y] === '|') { return 'S'}
       if (lines[x][y + 1] === '-') { return 'E'}
