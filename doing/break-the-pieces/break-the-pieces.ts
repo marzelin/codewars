@@ -12,7 +12,7 @@ const findEdges = (lines: string[]) => {
   return edges
 }
 
-const topRightOnly = (edges: number[][], lines: string[]) =>
+const topLeftOnly = (edges: number[][], lines: string[]) =>
   edges.filter( ([x, y]) =>
   
                             lines[x][y + 1] === '-'
@@ -25,5 +25,5 @@ const textToLines = (s: string) => s.split(`\n`)
 export {
   findEdges,
   textToLines,
-  topRightOnly
+  topLeftOnly
 }

@@ -1,7 +1,7 @@
 import {
   findEdges,
   textToLines,
-  topRightOnly
+  topLeftOnly
 } from './break-the-pieces'
 
 xdescribe('breakPieces', function () {
@@ -83,6 +83,6 @@ describe('topRightOnly', function () {
       "+-----+"]
     const expected = [[0, 0]]
 
-    topRightOnly(edges, lines).should.deep.equal(expected)
+    topLeftOnly(edges, lines).should.deep.equal(expected)
   })
 })
