@@ -1,0 +1,27 @@
+{
+  "name": "codewars",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "tsc": "tsc",
+    "tsnode": "ts-node",
+    "test": "mocha --opts mocha.opts"
+  },
+  "devDependencies": {
+    "@types/chai": "^3.4.34",
+    "@types/chai-as-promised": "^0.0.29",
+    "@types/jsdom": "^2.0.29",
+    "@types/mocha": "^2.2.34",
+    "@types/node": "^6.0.52",
+    "@types/react": "^0.14.55",
+    "chai": "^3.5.0",
+    "chai-as-promised": "^6.0.0",
+    "mocha": "^3.2.0",
+    "ts-node": "^1.7.2",
+    "tslint": "^4.1.1",
+    "typescript": "^2.1.5"
+  },
+  "dependencies": {
+    "jsdom": "^9.9.1"
+  }
+}
