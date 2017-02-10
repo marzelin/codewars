@@ -4,6 +4,7 @@ import {
   getNextDirection,
   getNextEdge,
   isOuter,
+  normalizeEdges,
   numberTuple,
   textToLines,
   topLeftOnly
@@ -230,5 +231,13 @@ describe('getAllEdges', function () {
     const allEdges = [[0, 3], [0, 6], [4, 6], [4, 3], [4, 0], [2, 0], [2, 3], [0, 3]]
     const usedOriginEdges = [[2, 0]]
     getAllEdges(lines)(origin).should.deep.equal([allEdges, usedOriginEdges])
+  })
+})
+
+describe('normalizeEdges', function () {
+  it('should normalize edges', function () {
+    const edges: numberTuple[] = [[1, 3], [1, 6], [4, 6], [4, 3], [1, 3]]
+    const expected = [[0, 0], [0, 3], [3, 3], [3, 0], [0, 0]]
+    normalizeEdges(edges).should.deep.equal(expected)
   })
 })

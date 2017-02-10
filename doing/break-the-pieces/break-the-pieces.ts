@@ -106,12 +106,20 @@ const getNextEdge = (
   return [x, y]
 }
 
+const normalizeEdges = (edges: numberTuple[]) => {
+  const [minX, minY] = edges.reduce(
+    ([minX, minY]: numberTuple, [x, y]: numberTuple) =>
+      [Math.min(minX, x), Math.min(minY, y)])
+    return edges.map( ([x, y]: numberTuple) => [x - minX, y - minY])
+}
+
 export {
   getAllEdges,
   findEdges,
   getNextDirection,
   getNextEdge,
   isOuter,
+  normalizeEdges,
   numberTuple,
   textToLines,
   topLeftOnly
