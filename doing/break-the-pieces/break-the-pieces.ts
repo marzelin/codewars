@@ -3,20 +3,20 @@
 // }
 
 type direction = 'N' | 'E' | 'S' | 'W'
-type numberTuple = [number, number]
+type position = [number, number]
 
-const findEdges = (lines: string[]) => {
-  const edges = []
+const findCorners = (lines: string[]) => {
+  const corners = []
   for (let x = 0, lx = lines.length; x < lx; x++) {
     for (let y = 0, ly = lines[x].length; y < ly; y++) {
-      if ( lines[x][y] === `+` ) { edges.push([x, y]) }
+      if ( lines[x][y] === `+` ) { corners.push([x, y]) }
     }
   }
-  return edges
+  return corners
 }
 
-const topLeftOnly = (edges: number[][], lines: string[]) =>
-  edges.filter( ([x, y]) =>
+const topLeftOnly = (corners: number[][], lines: string[]) =>
+  corners.filter( ([x, y]) =>
     lines[x][y + 1] === '-'
     && lines[x + 1]
     && lines[x + 1][y] === '|')
@@ -28,14 +28,14 @@ const textToLines = (s: string) => s.split(`\n`)
 //   .filter(noOuterShapes)
 // }
 
-const getAllEdges =
+const getAllCorners =
   (lines: string[]) =>
-  (origin: numberTuple) => {
+  (origin: position) => {
     let previous = origin
     let previousDirection: direction | null = null
-    let next: numberTuple
-    let shapeEdges = [origin]
-    let usedOriginEdges = []
+    let next: position
+    let shapeCorners = [origin]
+    let usedOrigins = []
     let nextDirection: direction
     do {
       nextDirection = getNextDirection(lines, previous, previousDirection)
@@ -43,20 +43,20 @@ const getAllEdges =
         return [null, []]
       }
       if (previousDirection === 'N' && nextDirection === 'E') {
-        usedOriginEdges.push(previous)
+        usedOrigins.push(previous)
       }
-      next = getNextEdge(lines, previous, nextDirection)
+      next = getNextCorner(lines, previous, nextDirection)
       previous = next
       previousDirection = nextDirection
-      shapeEdges.push(next)
+      shapeCorners.push(next)
 
     } while (origin[0] !== next[0] || origin[1] !== next[1]) 
-    return [shapeEdges, usedOriginEdges]
+    return [shapeCorners, usedOrigins]
   }
 
 const getNextDirection = (
   lines: string[],
-  [x, y]: numberTuple,
+  [x, y]: position,
   previousDirection: null | direction
 ): direction => {
   switch (previousDirection) {
@@ -77,15 +77,14 @@ const getNextDirection = (
 
 const isOuter = (
   lines: string[],
-  [x, y]: numberTuple
+  [x, y]: position
 ) => !lines[x][y + 1]
 
-
-const getNextEdge = (
+const getNextCorner = (
   lines: string[],
-  [x, y]: numberTuple,
+  [x, y]: position,
   direction: direction
-): numberTuple => {
+): position => {
   let verticalStep = 0
   let horizontalStep = 0
   switch (direction) {
@@ -105,21 +104,21 @@ const getNextEdge = (
   return [x, y]
 }
 
-const normalizeEdges = (edges: numberTuple[]) => {
-  const [minX, minY] = edges.reduce(
+const normalizeCorners = (corners: position[]) => {
+  const [minX, minY] = corners.reduce(
     ([minX, minY], [x, y]) =>
       [Math.min(minX, x), Math.min(minY, y)])
-    return edges.map( ([x, y]) => [x - minX, y - minY])
+    return corners.map( ([x, y]) => [x - minX, y - minY])
 }
 
-const drawPiece = (edges: numberTuple[]) => {
-  let [maxX, maxY] = edges
+const drawPiece = (corners: position[]) => {
+  let [maxX, maxY] = corners
     .reduce( ([maxX, maxY], [x, y]) => [Math.max(maxX, x), Math.max(maxY, y)])
   let piece = []
   for (let i = 0; i <= maxX; i++) { piece.push( ' '.repeat(maxY) ) }
-  for (let i = 0, l = edges.length - 1; i < l; i++) {
-    let start = edges[i]
-    let end = edges[i + 1]
+  for (let i = 0, l = corners.length - 1; i < l; i++) {
+    let start = corners[i]
+    let end = corners[i + 1]
     piece = drawEdge(start, end, piece)
   }
   return piece
@@ -127,8 +126,8 @@ const drawPiece = (edges: numberTuple[]) => {
 }
 
 const drawEdge = (
-  [x1, y1]: numberTuple,
-  [x2, y2]: numberTuple,
+  [x1, y1]: position,
+  [x2, y2]: position,
   piece: string[]
 ) => {
   piece = [...piece]
@@ -150,13 +149,13 @@ const substitute = (s: string, ch: string, i: number) => s.slice(0, i) + ch + s.
 export {
   drawEdge,
   drawPiece,
-  getAllEdges,
-  findEdges,
+  getAllCorners,
+  findCorners,
   getNextDirection,
-  getNextEdge,
+  getNextCorner,
   isOuter,
-  normalizeEdges,
-  numberTuple,
+  normalizeCorners,
+  position,
   substitute,
   textToLines,
   topLeftOnly

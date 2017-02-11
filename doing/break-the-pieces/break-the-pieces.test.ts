@@ -1,13 +1,13 @@
 import {
   drawEdge,
   drawPiece,
-  findEdges,
-  getAllEdges,
+  findCorners,
+  getAllCorners,
+  getNextCorner,
   getNextDirection,
-  getNextEdge,
   isOuter,
-  normalizeEdges,
-  numberTuple,
+  normalizeCorners,
+  position,
   substitute,
   textToLines,
   topLeftOnly
@@ -69,8 +69,8 @@ describe('textToLines', function () {
   })
 })
 
-describe('findEdges', function () {
-  it('should find edges', function () {
+describe('findCorners', function () {
+  it('should find corners', function () {
     const input = 
       ["+-----+",
       "|     |",
@@ -78,13 +78,13 @@ describe('findEdges', function () {
       "+-----+"]
     const expected = [[0, 0], [0, 6], [3, 0], [3, 6]]
     
-    findEdges(input).should.deep.equal(expected)
+    findCorners(input).should.deep.equal(expected)
   })
 })
 
 describe('topRightOnly', function () {
-  it('should return only top left edges', function () {
-    const edges = [[0, 0], [0, 6], [3, 0], [3, 6]]
+  it('should return only top left corners', function () {
+    const corners = [[0, 0], [0, 6], [3, 0], [3, 6]]
     const lines =
       ["+-----+",
       "|     |",
@@ -92,18 +92,18 @@ describe('topRightOnly', function () {
       "+-----+"]
     const expected = [[0, 0]]
 
-    topLeftOnly(edges, lines).should.deep.equal(expected)
+    topLeftOnly(corners, lines).should.deep.equal(expected)
   })
 })
 
 describe('getNextDirection', function () {
-  it(`should return 'E' as the next direction if first edge`, function () {
+  it(`should return 'E' as the next direction if first corner`, function () {
     const lines =
       ["+-----+",
       "|     |",
       "|     |",
       "+-----+"]
-    const previous: numberTuple = [0, 0]
+    const previous: position = [0, 0]
     const previousDirection = null
     ;(getNextDirection(lines, previous, previousDirection) as any).should.equal('E')
   })
@@ -113,7 +113,7 @@ describe('getNextDirection', function () {
       "|     |",
       "|     |",
       "+-----+"]
-    const previous: numberTuple = [0, 6]
+    const previous: position = [0, 6]
     const previousDirection = 'E'
     ;(getNextDirection(lines, previous, previousDirection) as any).should.equal('S')
   })
@@ -124,7 +124,7 @@ describe('getNextDirection', function () {
       "+     |",
       "|     |",
       "+-----+"]
-    const previous: numberTuple = [2, 0]
+    const previous: position = [2, 0]
     const previousDirection = 'N'
     ;(getNextDirection(lines, previous, previousDirection) as any).should.equal('N')
   })
@@ -138,7 +138,7 @@ describe('isOuter', function () {
       "+     |",
       "|     |",
       "+-----+"]
-    const point: numberTuple = [0, 6]
+    const point: position = [0, 6]
     isOuter(lines, point).should.be.true
   })
   it('should return false if a point is not at the end of a line', function () {
@@ -148,22 +148,22 @@ describe('isOuter', function () {
       "+     |",
       "|     |",
       "+-----+"]
-    const point: numberTuple = [2, 0]
+    const point: position = [2, 0]
     isOuter(lines, point).should.be.false
   })
 })
 
-describe('getNextEdge', function () {
-  it('should get next edge on the right' , function () {
+describe('getNextCorner', function () {
+  it('should get next corner on the right' , function () {
     const lines =
       ["+-----+",
       "|     |",
       "+     |",
       "|     |",
       "+-----+"]
-    const origin: numberTuple = [0, 0]
+    const origin: position = [0, 0]
     const direction = 'E'
-    getNextEdge(lines, origin, direction).should.deep.equal([0, 6])
+    getNextCorner(lines, origin, direction).should.deep.equal([0, 6])
   })
   it('should get next edge on the left' , function () {
     const lines =
@@ -172,9 +172,9 @@ describe('getNextEdge', function () {
       "+     |",
       "|     |",
       "+-----+"]
-    const origin: numberTuple = [4, 6]
+    const origin: position = [4, 6]
     const direction = 'W'
-    getNextEdge(lines, origin, direction).should.deep.equal([4, 0])
+    getNextCorner(lines, origin, direction).should.deep.equal([4, 0])
   })
   it('should get next edge above' , function () {
     const lines =
@@ -183,9 +183,9 @@ describe('getNextEdge', function () {
       "+     |",
       "|     |",
       "+-----+"]
-    const origin: numberTuple = [4, 0]
+    const origin: position = [4, 0]
     const direction = 'N'
-    getNextEdge(lines, origin, direction).should.deep.equal([2, 0])
+    getNextCorner(lines, origin, direction).should.deep.equal([2, 0])
   })
   it('should get next edge below' , function () {
     const lines =
@@ -194,24 +194,24 @@ describe('getNextEdge', function () {
       "+     |",
       "|     |",
       "+-----+"]
-    const origin: numberTuple = [0, 6]
+    const origin: position = [0, 6]
     const direction = 'S'
-    getNextEdge(lines, origin, direction).should.deep.equal([4, 6])
+    getNextCorner(lines, origin, direction).should.deep.equal([4, 6])
   })
 })
 
-describe('getAllEdges', function () {
-  it('should get all edges of a piece', function () {
+describe('getAllCorners', function () {
+  it('should get all corners of a piece', function () {
     const lines =
       ["+-----+",
       "|     |",
       "+     |",
       "|     |",
       "+-----+"]
-    const origin: numberTuple = [0, 0]
-    const allEdges = [[0, 0], [0, 6], [4, 6], [4, 0], [2, 0], [0, 0]]
-    const usedOriginEdges: never[] = []
-    getAllEdges(lines)(origin).should.deep.equal([allEdges, usedOriginEdges])
+    const origin: position = [0, 0]
+    const allCorners = [[0, 0], [0, 6], [4, 6], [4, 0], [2, 0], [0, 0]]
+    const usedOriginCorners: never[] = []
+    getAllCorners(lines)(origin).should.deep.equal([allCorners, usedOriginCorners])
   })
   it('should return null if it\'s outer shape', function () {
     const lines =
@@ -220,8 +220,8 @@ describe('getAllEdges', function () {
       "+  +--+",
       "|  |   ",
       "+--+   "]
-    const origin: numberTuple = [2, 3]
-    getAllEdges(lines)(origin).should.deep.equal([null, []])
+    const origin: position = [2, 3]
+    getAllCorners(lines)(origin).should.deep.equal([null, []])
   })
   it('should return used edge', function () {
     const lines =
@@ -230,25 +230,25 @@ describe('getAllEdges', function () {
       "+--+  |",
       "|     |",
       "+--+--+"]
-    const origin: numberTuple = [0, 3]
+    const origin: position = [0, 3]
     const allEdges = [[0, 3], [0, 6], [4, 6], [4, 3], [4, 0], [2, 0], [2, 3], [0, 3]]
     const usedOriginEdges = [[2, 0]]
-    getAllEdges(lines)(origin).should.deep.equal([allEdges, usedOriginEdges])
+    getAllCorners(lines)(origin).should.deep.equal([allEdges, usedOriginEdges])
   })
 })
 
-describe('normalizeEdges', function () {
-  it('should normalize edges', function () {
-    const edges: numberTuple[] = [[1, 3], [1, 6], [4, 6], [4, 3], [1, 3]]
+describe('normalizeCorners', function () {
+  it('should normalize corners', function () {
+    const corners: position[] = [[1, 3], [1, 6], [4, 6], [4, 3], [1, 3]]
     const expected = [[0, 0], [0, 3], [3, 3], [3, 0], [0, 0]]
-    normalizeEdges(edges).should.deep.equal(expected)
+    normalizeCorners(corners).should.deep.equal(expected)
   })
 })
 
 describe('drawEdge', function () {
   it('should draw a line between two points', function () {
-    const start: numberTuple = [0, 0]
-    const end: numberTuple = [0, 3]
+    const start: position = [0, 0]
+    const end: position = [0, 3]
     const piece = ['   ']
     const expected = [' --+'] 
     drawEdge(start, end, piece).should.deep.equal(expected)
@@ -257,7 +257,7 @@ describe('drawEdge', function () {
 
 describe('drawPiece', function () {
   it('should draw piece from given edges', function () {
-    const edges: numberTuple[] = [[0, 0], [0, 3], [3, 3], [3, 0], [0, 0]]
+    const edges: position[] = [[0, 0], [0, 3], [3, 3], [3, 0], [0, 0]]
     const expected = 
      ["+--+",
       "|  |",
