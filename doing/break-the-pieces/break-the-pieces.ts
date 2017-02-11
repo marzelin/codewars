@@ -138,6 +138,8 @@ const drawPiece = (corners: position[]) => {
   }
   return piece
     .join('\n')
+    .replace(/\s*\n/g, '\n')
+    .replace(/\s*$/, '')
 }
 
 const drawEdge = (
