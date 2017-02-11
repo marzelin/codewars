@@ -1,12 +1,29 @@
-// const breakPieces = (shape: string) => {
-//   complete me!
-// }
+const breakPieces = (shape: string) => {
+  const lines = textToLines(shape)
+  const shapeCorners = topLeftOnly( findCorners(lines), lines )
+  const pieces = []
+  for (let i = 0; i < shapeCorners.length; i++) {
+    const {pieceCorners, usedOrigins} = getAllCorners(lines)(shapeCorners[i])
+    if ( !pieceCorners) { continue }
+    if (usedOrigins.length) {
+      usedOrigins.forEach( ([x, y]) => {
+        const index = shapeCorners.slice(i + 1).findIndex( ([a, b]) => a === x && b === y)
+        if (index > -1) {
+          shapeCorners.splice(index + 1 + i, 1)
+        }
+      })
+    }
+    pieces.push(normalizeCorners(pieceCorners))
+  }
+  return pieces
+    .map(drawPiece)
+}
 
 type direction = 'N' | 'E' | 'S' | 'W'
 type position = [number, number]
 
 const findCorners = (lines: string[]) => {
-  const corners = []
+  const corners: position[] = []
   for (let x = 0, lx = lines.length; x < lx; x++) {
     for (let y = 0, ly = lines[x].length; y < ly; y++) {
       if ( lines[x][y] === `+` ) { corners.push([x, y]) }
@@ -15,7 +32,7 @@ const findCorners = (lines: string[]) => {
   return corners
 }
 
-const topLeftOnly = (corners: number[][], lines: string[]) =>
+const topLeftOnly = (corners: position[], lines: string[]) =>
   corners.filter( ([x, y]) =>
     lines[x][y + 1] === '-'
     && lines[x + 1]
@@ -23,35 +40,33 @@ const topLeftOnly = (corners: number[][], lines: string[]) =>
 
 const textToLines = (s: string) => s.split(`\n`)
 
-// const getPiece = (lines: string[]) => (originEdge: numberTuple) {
-//   allEdges(originEdge, lines)
-//   .filter(noOuterShapes)
-// }
-
 const getAllCorners =
   (lines: string[]) =>
   (origin: position) => {
     let previous = origin
     let previousDirection: direction | null = null
     let next: position
-    let shapeCorners = [origin]
-    let usedOrigins = []
+    let pieceCorners = [origin]
+    let usedOrigins: position[] = []
     let nextDirection: direction
     do {
       nextDirection = getNextDirection(lines, previous, previousDirection)
       if (previousDirection === 'E' && nextDirection === 'N' && isOuter(lines, previous)) {
-        return [null, []]
+        return { pieceCorners: null, usedOrigins}
       }
       if (previousDirection === 'N' && nextDirection === 'E') {
         usedOrigins.push(previous)
       }
       next = getNextCorner(lines, previous, nextDirection)
+      if (previousDirection === nextDirection) {
+        pieceCorners.pop()
+      }
+      pieceCorners.push(next)
       previous = next
       previousDirection = nextDirection
-      shapeCorners.push(next)
 
     } while (origin[0] !== next[0] || origin[1] !== next[1]) 
-    return [shapeCorners, usedOrigins]
+    return {pieceCorners, usedOrigins}
   }
 
 const getNextDirection = (
@@ -147,6 +162,7 @@ const drawEdge = (
 const substitute = (s: string, ch: string, i: number) => s.slice(0, i) + ch + s.slice(i + 1)
 
 export {
+  breakPieces,
   drawEdge,
   drawPiece,
   getAllCorners,

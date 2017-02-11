@@ -1,4 +1,5 @@
 import {
+  breakPieces,
   drawEdge,
   drawPiece,
   findCorners,
@@ -13,35 +14,35 @@ import {
   topLeftOnly
 } from './break-the-pieces'
 
-xdescribe('breakPieces', function () {
+describe('breakPieces', function () {
   it('should break a shape into pieces', function () {
-  //   const input = 
-  //     ["+------------+",
-  //     "|            |",
-  //     "|            |",
-  //     "|            |",
-  //     "+------+-----+",
-  //     "|      |     |",
-  //     "|      |     |",
-  //     "+------+-----+"].join(`\n`)
+    const input = 
+      ["+------------+",
+      "|            |",
+      "|            |",
+      "|            |",
+      "+------+-----+",
+      "|      |     |",
+      "|      |     |",
+      "+------+-----+"].join(`\n`)
 
-  //   const expected = [
-  //     ["+------------+",
-  //     "|            |",
-  //     "|            |",
-  //     "|            |",
-  //     "+------------+"].join(`\n`),
-  //     ["+------+",
-  //     "|      |",
-  //     "|      |",
-  //     "+------+"].join("\n"),
-  //     ["+-----+",
-  //     "|     |",
-  //     "|     |",
-  //     "+-----+"].join("\n")
-  //   ]
+    const expected = [
+      ["+------------+",
+      "|            |",
+      "|            |",
+      "|            |",
+      "+------------+"].join(`\n`),
+      ["+------+",
+      "|      |",
+      "|      |",
+      "+------+"].join("\n"),
+      ["+-----+",
+      "|     |",
+      "|     |",
+      "+-----+"].join("\n")
+    ]
 
-  //   // breakPieces(input).sort().should.equal(expected.sort())
+    breakPieces(input).sort().should.deep.equal(expected.sort())
   })
 })
 
@@ -84,7 +85,7 @@ describe('findCorners', function () {
 
 describe('topRightOnly', function () {
   it('should return only top left corners', function () {
-    const corners = [[0, 0], [0, 6], [3, 0], [3, 6]]
+    const corners: position[] = [[0, 0], [0, 6], [3, 0], [3, 6]]
     const lines =
       ["+-----+",
       "|     |",
@@ -209,9 +210,9 @@ describe('getAllCorners', function () {
       "|     |",
       "+-----+"]
     const origin: position = [0, 0]
-    const allCorners = [[0, 0], [0, 6], [4, 6], [4, 0], [2, 0], [0, 0]]
-    const usedOriginCorners: never[] = []
-    getAllCorners(lines)(origin).should.deep.equal([allCorners, usedOriginCorners])
+    const pieceCorners = [[0, 0], [0, 6], [4, 6], [4, 0], [0, 0]]
+    const usedOrigins: never[] = []
+    getAllCorners(lines)(origin).should.deep.equal({pieceCorners, usedOrigins})
   })
   it('should return null if it\'s outer shape', function () {
     const lines =
@@ -221,7 +222,7 @@ describe('getAllCorners', function () {
       "|  |   ",
       "+--+   "]
     const origin: position = [2, 3]
-    getAllCorners(lines)(origin).should.deep.equal([null, []])
+    getAllCorners(lines)(origin).should.deep.equal({pieceCorners: null, usedOrigins: []})
   })
   it('should return used edge', function () {
     const lines =
@@ -231,9 +232,9 @@ describe('getAllCorners', function () {
       "|     |",
       "+--+--+"]
     const origin: position = [0, 3]
-    const allEdges = [[0, 3], [0, 6], [4, 6], [4, 3], [4, 0], [2, 0], [2, 3], [0, 3]]
-    const usedOriginEdges = [[2, 0]]
-    getAllCorners(lines)(origin).should.deep.equal([allEdges, usedOriginEdges])
+    const pieceCorners = [[0, 3], [0, 6], [4, 6], [4, 0], [2, 0], [2, 3], [0, 3]]
+    const usedOrigins = [[2, 0]]
+    getAllCorners(lines)(origin).should.deep.equal({pieceCorners, usedOrigins})
   })
 })
 
