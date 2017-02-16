@@ -5,7 +5,7 @@
   "scripts": {
     "tsc": "tsc",
     "tsnode": "ts-node",
-    "test": "mocha --opts mocha.opts"
+    "test": "TS_NODE_DISABLE_WARNINGS=true mocha --opts mocha.opts"
   },
   "devDependencies": {
     "@types/chai": "^3.4.34",
