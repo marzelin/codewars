@@ -5,7 +5,7 @@
 //     grid,
 //     (grid) => pipe(
 //       shapeCorners,
-//       origins(grid),
+//       piecesOriginPoints(grid),
 //       piecesCorners(grid),
 //       pieces
 //     )(grid)
