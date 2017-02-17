@@ -16,7 +16,8 @@ import { always,
 const piecesCorners = (grid: string[]) =>
   pipe(
     map(pieceCorners(grid)),
-    reject(isNil)
+    reject(isNil),
+    map(normalizeCorners)
   )
 
 const pieceCorners = (grid: string[]) => (origin: number[]) =>
@@ -88,6 +89,13 @@ const nextCorner = (grid: string[], [x, y]: number[]) => (direction: string) => 
 
 const isOrigin = (origin: number[]) => (corner: number[]) =>
   equals(origin[0], corner[0]) && equals(origin[1], corner[1])
+
+const normalizeCorners = (corners: number[][]) => {
+  const [minX, minY] = corners.reduce(
+    ([minX, minY], [x, y]) =>
+      [Math.min(minX, x), Math.min(minY, y)])
+    return corners.map( ([x, y]) => [x - minX, y - minY])
+}
 
 export {
   pieceCorners,
