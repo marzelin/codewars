@@ -7,7 +7,7 @@
     "ordered-imports": [true, {"import-sources-order": "lowercase-first", "named-imports-order": "lowercase-first"}],
     "arrow-parens": true,
     "semicolon": [true, "never"],
-    "triple-equals": true,
+    "triple-equals": [true, "allow-null-check"],
     "no-empty": true,
     // "no-magic-numbers": [true],
     "radix": true
