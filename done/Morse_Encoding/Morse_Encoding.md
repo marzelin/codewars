@@ -1,6 +1,6 @@
-"You are writing an encoder/decoder to convert between javascript strings and a binary representation of Morse code.
+You are writing an encoder/decoder to convert between javascript strings and a binary representation of Morse code.
 
-Each Morse code character is represented by a series of \"dots\" and \"dashes\". In binary, a dot is a single bit (`1`) and a dash is three bits (`111`). Between each dot or dash within a single character, we place a single zero bit. (I.e. \"dot dash\" would become `10111`.) Separate characters are separated by three zero bits (`000`). Words are spearated by a single space, which is represented by 7 zero bits (`0000000`).
+Each Morse code character is represented by a series of "dots" and "dashes". In binary, a dot is a single bit (`1`) and a dash is three bits (`111`). Between each dot or dash within a single character, we place a single zero bit. (I.e. \"dot dash\" would become `10111`.) Separate characters are separated by three zero bits (`000`). Words are spearated by a single space, which is represented by 7 zero bits (`0000000`).
 
 <br>
 <h3>Formal Syntax</h3>
